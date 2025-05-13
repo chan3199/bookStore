@@ -8,7 +8,7 @@ router.put("/", (req, res) => {
 });
 
 router.delete("/", (req, res) => {
-  res.json("좋아요 취소소");
+  res.json("좋아요 취소");
 });
 
 module.exports = router;

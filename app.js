@@ -7,10 +7,10 @@ dotenv.config();
 app.listen(process.env.PORT);
 
 const userRouter = require("./routes/users");
-const bookRouter = require("./routes/users");
-const likeRouter = require("./routes/users");
-const cartRouter = require("./routes/users");
-const orderRouter = require("./routes/users");
+const bookRouter = require("./routes/books");
+const likeRouter = require("./routes/likes");
+const cartRouter = require("./routes/carts");
+const orderRouter = require("./routes/orders");
 
 app.use("users/", userRouter);
 app.use("carts/", cartRouter);

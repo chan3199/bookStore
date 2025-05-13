@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 
+router.use(express.json());
+
 router.post("/signup", (req, res) => {
   res.json("회원가입");
 });
@@ -16,3 +18,5 @@ router.post("/reset", (req, res) => {
 router.put("/reset", (req, res) => {
   res.json("비밀번호 초기화");
 });
+
+module.exports = router;

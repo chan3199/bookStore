@@ -13,12 +13,8 @@ router.post("/signup", join);
 
 router.post("/login", login);
 
-router.post("/reset", (req, res) => {
-  res.json("비밀번호 초기화 요청");
-});
+router.post("/reset", passwordResetRequest);
 
-router.put("/reset", (req, res) => {
-  res.json("비밀번호 초기화");
-});
+router.put("/reset", passwordReset);
 
 module.exports = router;

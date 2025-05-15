@@ -10,6 +10,5 @@ router.use(express.json());
 
 router.get("/", allBooks);
 router.get("/:id", bookDetail);
-router.get("/", booksByCategory);
 
 module.exports = router;

@@ -4,7 +4,8 @@ const { StatusCodes } = require("http-status-codes");
 const allBooks = (req, res) => {
   const { categoryId, news, limit, currentPage } = req.query;
   const offset = limit * (currentPage - 1);
-  let sql = "SELECT * FROM books";
+  let sql =
+    "SELECT *, (SELECT count(*) FROM Bookstore.likes where liked_book_id = books.id) AS likes FROM books";
   let values = [];
 
   if (categoryId && news) {

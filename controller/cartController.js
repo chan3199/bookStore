@@ -31,10 +31,8 @@ const getCartItems = (req, res) => {
 
 const removeCartItems = (req, res) => {
   const { id } = req.params;
-  const { userId } = req.body;
-  const sql = "INSERT INTO likes (user_id, liked_book_id) VALUES (?, ?)";
-  const values = [userId, id];
-  conn.query(sql, values, (err, results) => {
+  const sql = "DELETE FROM cartItems WHERE id = ?";
+  conn.query(sql, id, (err, results) => {
     if (err) {
       console.log(err);
       return res.status(StatusCodes.BAD_REQUEST).end();

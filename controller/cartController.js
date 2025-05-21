@@ -15,9 +15,12 @@ const addToCart = (req, res) => {
   });
 };
 const getCartItems = (req, res) => {
-  const sql = "INSERT INTO likes (user_id, liked_book_id) VALUES (?, ?)";
-  const values = [userId, id];
-  conn.query(sql, values, (err, results) => {
+  const { userId } = req.body;
+  const sql = `SELECT cartItems.id, book_id, title, summary, quantity, price 
+                FROM cartItems LEFT JOIN books 
+                ON cartItems.book_id = books.id
+                WHERE user_id = ?`;
+  conn.query(sql, userId, (err, results) => {
     if (err) {
       console.log(err);
       return res.status(StatusCodes.BAD_REQUEST).end();

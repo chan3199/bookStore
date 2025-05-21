@@ -14,8 +14,4 @@ router.get("/", getCartItems);
 
 router.delete("/:id", removeCartItems);
 
-router.get("/", (req, res) => {
-  res.json("선택한 장바구니 상품 조회");
-});
-
 module.exports = router;

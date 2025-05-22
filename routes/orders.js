@@ -8,9 +8,9 @@ const {
 
 router.use(express.json());
 
-router.get("/", order);
+router.get("/", getOrders);
 
-router.post("/", getOrders);
+router.post("/", order);
 
 router.get("/:id", getOrderDetail);
 

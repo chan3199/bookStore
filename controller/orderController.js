@@ -9,28 +9,23 @@ const order = (req, res) => {
   let sql =
     "INSERT INTO delivery (address, receiver, contact) VALUES (?, ?, ?)";
   let values = [delivery.address, delivery.receiver, delivery.contact];
-  //   conn.query(sql, values, (err, results) => {
-  //     if (err) {
-  //       console.log(err);
-  //       return res.status(StatusCodes.BAD_REQUEST).end();
-  //     }
-  //     deliveryId = results.insertId;
-
-  //     res.status(StatusCodes.OK).json(results);
-  //   });
-  //   sql = `INSERT INTO orders (book_title, total_quantity, total_price, user_id, delivery_id)
-  // VALUES (?, ?, ?, ?, ?)`;
-  //   values = [firstBookTitle, totalQuantity, totalPrice, userId, deliveryId];
-  //   conn.query(sql, values, (err, results) => {
-  //     if (err) {
-  //       console.log(err);
-  //       return res.status(StatusCodes.BAD_REQUEST).end();
-  //     }
-  //     orderId = results.insertId;
-  //     console.log(orderId);
-
-  //     res.status(StatusCodes.OK).json(results);
-  //   });
+  conn.query(sql, values, (err, results) => {
+    if (err) {
+      console.log(err);
+      return res.status(StatusCodes.BAD_REQUEST).end();
+    }
+    deliveryId = results.insertId;
+  });
+  sql = `INSERT INTO orders (book_title, total_quantity, total_price, user_id, delivery_id)
+  VALUES (?, ?, ?, ?, ?)`;
+  values = [firstBookTitle, totalQuantity, totalPrice, userId, deliveryId];
+  conn.query(sql, values, (err, results) => {
+    if (err) {
+      console.log(err);
+      return res.status(StatusCodes.BAD_REQUEST).end();
+    }
+    orderId = results.insertId;
+  });
   sql = `INSERT INTO orderedBook (order_id, book_id, quantity) VALUES ?;`;
   values = [];
   items.forEach((item) => {

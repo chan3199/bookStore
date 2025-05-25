@@ -1,44 +1,43 @@
-const conn = require("../mariadb");
+const getConn = require("../mariadb");
 const { StatusCodes } = require("http-status-codes");
 
-const order = (req, res) => {
-  let deliveryId = 3;
-  let orderId = 5;
-  const { items, delivery, totalQuantity, totalPrice, userId, firstBookTitle } =
-    req.body;
-  let sql =
-    "INSERT INTO delivery (address, receiver, contact) VALUES (?, ?, ?)";
-  let values = [delivery.address, delivery.receiver, delivery.contact];
-  conn.query(sql, values, (err, results) => {
-    if (err) {
-      console.log(err);
-      return res.status(StatusCodes.BAD_REQUEST).end();
-    }
-    deliveryId = results.insertId;
-  });
-  sql = `INSERT INTO orders (book_title, total_quantity, total_price, user_id, delivery_id)
-  VALUES (?, ?, ?, ?, ?)`;
-  values = [firstBookTitle, totalQuantity, totalPrice, userId, deliveryId];
-  conn.query(sql, values, (err, results) => {
-    if (err) {
-      console.log(err);
-      return res.status(StatusCodes.BAD_REQUEST).end();
-    }
-    orderId = results.insertId;
-  });
-  sql = `INSERT INTO orderedBook (order_id, book_id, quantity) VALUES ?;`;
-  values = [];
-  items.forEach((item) => {
-    values.push([orderId, item.bookId, item.quantity]);
-  });
-  conn.query(sql, [values], (err, results) => {
-    if (err) {
-      console.log(err);
-      return res.status(StatusCodes.BAD_REQUEST).end();
-    }
+const order = async (req, res) => {
+  const conn = await getConn();
+  try {
+    const {
+      items,
+      delivery,
+      totalQuantity,
+      totalPrice,
+      userId,
+      firstBookTitle,
+    } = req.body;
 
-    res.status(StatusCodes.OK).json(results);
-  });
+    const [deliveryResult] = await conn.query(
+      "INSERT INTO delivery (address, receiver, contact) VALUES (?, ?, ?)",
+      [delivery.address, delivery.receiver, delivery.contact]
+    );
+    const deliveryId = deliveryResult.insertId;
+
+    const [orderResult] = await conn.query(
+      "INSERT INTO orders (book_title, total_quantity, total_price, user_id, delivery_id) VALUES (?, ?, ?, ?, ?)",
+      [firstBookTitle, totalQuantity, totalPrice, userId, deliveryId]
+    );
+    const orderId = orderResult.insertId;
+
+    const orderItems = items.map((i) => [orderId, i.bookId, i.quantity]);
+    const [finalResult] = await conn.query(
+      "INSERT INTO orderedBook (order_id, book_id, quantity) VALUES ?",
+      [orderItems]
+    );
+
+    res.status(StatusCodes.OK).json(finalResult);
+  } catch (err) {
+    console.log(err);
+    res.status(StatusCodes.BAD_REQUEST).end();
+  } finally {
+    conn.end();
+  }
 };
 
 const getOrders = (req, res) => {

@@ -1,8 +1,8 @@
-const getConn = require("../mariadb");
+const { createConn } = require("../mariadb");
 const { StatusCodes } = require("http-status-codes");
 
 const order = async (req, res) => {
-  const conn = await getConn();
+  const conn = await createConn();
   try {
     const {
       items,
@@ -31,6 +31,7 @@ const order = async (req, res) => {
     );
 
     const orderItems = cartItems.map((i) => [orderId, i.book_id, i.quantity]);
+    console.log(orderItems);
     const [finalResult] = await conn.query(
       "INSERT INTO orderedBook (order_id, book_id, quantity) VALUES ?",
       [orderItems]
@@ -53,8 +54,15 @@ const deleteCartItems = async (conn, items) => {
   return await conn.query(sql, [items]);
 };
 
-const getOrders = (req, res) => {
-  res.json("주문 목록 조회");
+const getOrders = async (req, res) => {
+  const conn = await createConn();
+
+  const [rows, fields] =
+    await conn.execute(`SELECT orders.id, book_title, total_quantity, total_price, created_at,
+                address, receiver, contact
+                FROM orders LEFT JOIN delivery
+                ON orders.delivery_id = delivery.id;`);
+  return res.status(StatusCodes.OK).json(rows);
 };
 
 const getOrderDetail = (req, res) => {

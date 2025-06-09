@@ -10,7 +10,7 @@ const createConn = async () => {
   });
 };
 
-const connection = mysql.createConnection({
+const conn = mysql.createConnection({
   host: "127.0.0.1",
   user: "root",
   password: "root",
@@ -18,4 +18,4 @@ const connection = mysql.createConnection({
   dateStrings: true,
 });
 
-module.exports = { connection, createConn };
+module.exports = { conn, createConn };
